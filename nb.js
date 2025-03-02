@@ -1,4 +1,4 @@
-// fs = require('fs');
+fs = require("fs");
 
 // songs
 imagine = ["c", "cmaj7", "f", "am", "dm", "g", "e7"];
