@@ -123,9 +123,8 @@ setProbabilityOfChordsInLabels();
  * @param {string[]} chords array of chords
  */
 function classify(chords) {
-  console.log("CLASSIFICATION OF: ", chords);
   var ttal = labelProbabilities;
-  console.log("ttal:", ttal);
+  console.log(ttal);
   var classified = {};
   Object.keys(ttal).forEach(function (obj) {
     var first = labelProbabilities[obj] + 1.01;
@@ -139,7 +138,7 @@ function classify(chords) {
     });
     classified[obj] = first;
   });
-  console.log("classified:", classified);
+  console.log(classified);
 }
 
 function bootstrap() {
