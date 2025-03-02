@@ -43,7 +43,7 @@ function train(chords, label) {
       allChords.push(chords[index]);
     }
   }
-  if (!!Object.keys(labelCounts).includes(label)) {
+  if (Object.keys(labelCounts).includes(label)) {
     labelCounts[label] = labelCounts[label] + 1;
   } else {
     labelCounts[label] = 1;
