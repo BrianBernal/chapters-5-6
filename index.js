@@ -1,1 +1,3 @@
-console.log("Hello CodeSandbox");
+const nbFn = require("./nb");
+
+nbFn();
