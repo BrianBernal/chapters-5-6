@@ -55,20 +55,11 @@ function train(chords, label) {
 }
 
 /**
- * stupid function
- * @returns songs.length
- */
-function getNumberOfSongs() {
-  return songs.length;
-}
-
-/**
  * set labelProbabilities
  */
 function setLabelProbabilities() {
   Object.keys(labelCounts).forEach(function (label) {
-    var numberOfSongs = getNumberOfSongs();
-    labelProbabilities[label] = labelCounts[label] / numberOfSongs;
+    labelProbabilities[label] = labelCounts[label] / songs.length;
   });
 }
 
