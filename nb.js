@@ -98,9 +98,9 @@ function setProbabilityOfChordsInLabels() {
 train(imagine, easy);
 train(somehereOverTheRainbow, easy);
 train(tooManyCooks, easy);
-train(iWillFollowYouIntoTheDark, "medium");
-train(babyOneMoreTime, "medium");
-train(creep, "medium");
+train(iWillFollowYouIntoTheDark, medium);
+train(babyOneMoreTime, medium);
+train(creep, medium);
 train(paperBag, "hard");
 train(toxic, "hard");
 train(bulletproof, "hard");
