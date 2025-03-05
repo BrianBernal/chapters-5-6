@@ -101,9 +101,9 @@ train(tooManyCooks, easy);
 train(iWillFollowYouIntoTheDark, medium);
 train(babyOneMoreTime, medium);
 train(creep, medium);
-train(paperBag, "hard");
-train(toxic, "hard");
-train(bulletproof, "hard");
+train(paperBag, hard);
+train(toxic, hard);
+train(bulletproof, hard);
 
 setLabelProbabilities();
 setChordCountsInLabels();
