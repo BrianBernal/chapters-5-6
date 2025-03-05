@@ -130,7 +130,6 @@ function classify(chords) {
         probabilityOfChordsInLabels[difficultyKey][chord];
       if (probabilityOfChordInLabel) {
         first = first * (probabilityOfChordInLabel + smoothing);
-        first + smoothing;
       }
     });
     classified[difficultyKey] = first;
