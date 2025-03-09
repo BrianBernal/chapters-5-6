@@ -118,7 +118,6 @@ setProbabilityOfChordsInLabels();
  */
 function classify(chords) {
   const smoothing = 1.01;
-  console.log(labelProbabilities);
   var classified = new Map();
   labelProbabilities.forEach(function (_probabilities, difficulty) {
     var first = labelProbabilities.get(difficulty) + smoothing;
@@ -162,5 +161,11 @@ describe("Characterization tests. The file:", function () {
 
   it("sets welcome message", function () {
     expect(welcomeMessage()).toBe("Welcome to nb.test.js!");
+  });
+
+  it("label probabilities", function () {
+    expect(labelProbabilities.get("easy")).toBe(0.3333333333333333);
+    expect(labelProbabilities.get("medium")).toBe(0.3333333333333333);
+    expect(labelProbabilities.get("hard")).toBe(0.3333333333333333);
   });
 });
