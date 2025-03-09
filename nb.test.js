@@ -128,17 +128,31 @@ function classify(chords) {
     });
     classified.set(difficulty, first);
   });
-  console.log(classified);
+  return classified;
 }
 
-classify(["d", "g", "e", "dm"]);
-classify(["f#m7", "a", "dadd9", "dmaj7", "bm", "bm7", "d", "f#m"]);
-
 // TESTS
-var wish = require("wish");
 
-describe("the file", function () {
-  it("works", function () {
-    wish(true);
+describe("Characterization tests. The file:", function () {
+  it("classifies", function () {
+    var classified = classify([
+      "f#m7",
+      "a",
+      "dadd9",
+      "dmaj7",
+      "bm",
+      "bm7",
+      "d",
+      "f#m",
+    ]);
+    expect(classified.get("easy")).toBe(1.3433333333333333);
+    expect(classified.get("medium")).toBe(1.5060259259259259);
+    expect(classified.get("hard")).toBe(1.6884223991769547);
+  });
+  it("classifies again", function () {
+    var classified = classify(["d", "g", "e", "dm"]);
+    expect(classified.get("easy")).toBe(2.023094827160494);
+    expect(classified.get("medium")).toBe(1.855758613168724);
+    expect(classified.get("hard")).toBe(1.855758613168724);
   });
 });
