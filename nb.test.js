@@ -11,29 +11,31 @@ const easy = "easy";
 const medium = "medium";
 const hard = "hard";
 
-imagine = ["c", "cmaj7", "f", "am", "dm", "g", "e7"];
-somehereOverTheRainbow = ["c", "em", "f", "g", "am"];
-tooManyCooks = ["c", "g", "f"];
-iWillFollowYouIntoTheDark = ["f", "dm", "bb", "c", "a", "bbm"];
-babyOneMoreTime = ["cm", "g", "bb", "eb", "fm", "ab"];
-creep = ["g", "gsus4", "b", "bsus4", "c", "cmsus4", "cm6"];
-paperBag = [
-  "bm7",
-  "e",
-  "c",
-  "g",
-  "b7",
-  "f",
-  "em",
-  "a",
-  "cmaj7",
-  "em7",
-  "a7",
-  "f7",
-  "b",
-];
-toxic = ["cm", "eb", "g", "cdim", "eb7", "d7", "db7", "ab", "gmaj7", "g7"];
-bulletproof = ["d#m", "g#", "b", "f#", "g#m", "c#"];
+function setSongs() {
+  imagine = ["c", "cmaj7", "f", "am", "dm", "g", "e7"];
+  somewhereOverTheRainbow = ["c", "em", "f", "g", "am"];
+  tooManyCooks = ["c", "g", "f"];
+  iWillFollowYouIntoTheDark = ["f", "dm", "bb", "c", "a", "bbm"];
+  babyOneMoreTime = ["cm", "g", "bb", "eb", "fm", "ab"];
+  creep = ["g", "gsus4", "b", "bsus4", "c", "cmsus4", "cm6"];
+  paperBag = [
+    "bm7",
+    "e",
+    "c",
+    "g",
+    "b7",
+    "f",
+    "em",
+    "a",
+    "cmaj7",
+    "em7",
+    "a7",
+    "f7",
+    "b",
+  ];
+  toxic = ["cm", "eb", "g", "cdim", "eb7", "d7", "db7", "ab", "gmaj7", "g7"];
+  bulletproof = ["d#m", "g#", "b", "f#", "g#m", "c#"];
+}
 
 var songs = [];
 var allChords = new Set();
@@ -98,19 +100,25 @@ function setProbabilityOfChordsInLabels() {
   });
 }
 
-train(imagine, easy);
-train(somehereOverTheRainbow, easy);
-train(tooManyCooks, easy);
-train(iWillFollowYouIntoTheDark, medium);
-train(babyOneMoreTime, medium);
-train(creep, medium);
-train(paperBag, hard);
-train(toxic, hard);
-train(bulletproof, hard);
+function trainAll() {
+  setSongs();
+  train(imagine, easy);
+  train(somewhereOverTheRainbow, easy);
+  train(tooManyCooks, easy);
+  train(iWillFollowYouIntoTheDark, medium);
+  train(babyOneMoreTime, medium);
+  train(creep, medium);
+  train(paperBag, hard);
+  train(toxic, hard);
+  train(bulletproof, hard);
+  setLabelsAndProbabilities();
+}
 
-setLabelProbabilities();
-setChordCountsInLabels();
-setProbabilityOfChordsInLabels();
+function setLabelsAndProbabilities() {
+  setLabelProbabilities();
+  setChordCountsInLabels();
+  setProbabilityOfChordsInLabels();
+}
 
 /**
  * logs classified stuff
@@ -136,6 +144,7 @@ function classify(chords) {
 // TESTS
 
 describe("Characterization tests. The file:", function () {
+  trainAll();
   it("classifies", function () {
     var classified = classify([
       "f#m7",
