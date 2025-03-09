@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --watch index.js"
+    "start": "node --watch index.js",
+    "setup-test-env": "yarn global add jest",
+    "test": "jest",
+    "test:unit:watch": "jest --watchAll"
   },
   "keywords": [],
   "author": "Brian Bernal",
