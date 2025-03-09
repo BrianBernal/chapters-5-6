@@ -2,7 +2,10 @@ function fileName() {
   var theError = new Error("here I am");
   return /\/(\w+\.test\.js)\:/.exec(theError.stack)[1];
 }
-console.log(`Welcome to ${fileName()}!`);
+
+function welcomeMessage() {
+  return `Welcome to ${fileName()}!`;
+}
 
 const easy = "easy";
 const medium = "medium";
@@ -149,10 +152,15 @@ describe("Characterization tests. The file:", function () {
     expect(classified.get("medium")).toBe(1.5060259259259259);
     expect(classified.get("hard")).toBe(1.6884223991769547);
   });
+
   it("classifies again", function () {
     var classified = classify(["d", "g", "e", "dm"]);
     expect(classified.get("easy")).toBe(2.023094827160494);
     expect(classified.get("medium")).toBe(1.855758613168724);
     expect(classified.get("hard")).toBe(1.855758613168724);
+  });
+
+  it("sets welcome message", function () {
+    expect(welcomeMessage()).toBe("Welcome to nb.test.js!");
   });
 });
