@@ -1,14 +1,16 @@
 {
   "name": "nodejs-sandbox",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node --watch index.js"
   },
   "keywords": [],
-  "author": "Ives van Hoorne",
+  "author": "Brian Bernal",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
   "dependencies": {}
 }
