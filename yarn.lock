@@ -2005,6 +2005,11 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
+wish@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/wish/-/wish-1.0.1.tgz#7f2d334864947b1fdff048b131d00287caf79d9c"
+  integrity sha512-L967DHObqFtCaPnUDlpJ0vM/+kvuqfvUEJF3YOcx+shLHXJPZ6ORU5RtrRApKBOfa0A/mGnrtRQljzOfm7ZFrA==
+
 wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
