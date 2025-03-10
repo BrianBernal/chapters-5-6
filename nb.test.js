@@ -17,6 +17,26 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   probabilityOfChordsInLabels: new Map(),
+  classify: function (chords) {
+    const smoothing = 1.01;
+    const classified = new Map();
+    classifier.labelProbabilities.forEach(function (
+      _probabilities,
+      difficulty
+    ) {
+      const totalLikelihood = chords.reduce(function (total, chord) {
+        const probabilityOfChordInLabel =
+          classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
+        if (probabilityOfChordInLabel) {
+          return total * (probabilityOfChordInLabel + smoothing);
+        } else {
+          return total;
+        }
+      }, classifier.labelProbabilities.get(difficulty) + smoothing);
+      classified.set(difficulty, totalLikelihood);
+    });
+    return classified;
+  },
 };
 
 function fileName() {
@@ -104,32 +124,6 @@ function setLabelsAndProbabilities() {
   setProbabilityOfChordsInLabels();
 }
 
-/**
- * logs classified stuff
- * @param {string[]} chords array of chords
- */
-function classify(chords) {
-  const smoothing = 1.01;
-  const classified = new Map();
-  classifier.labelProbabilities.forEach(function (_probabilities, difficulty) {
-    const likelihoods = [
-      classifier.labelProbabilities.get(difficulty) + smoothing,
-    ];
-    chords.forEach(function (chord) {
-      const probabilityOfChordInLabel =
-        classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
-      if (probabilityOfChordInLabel) {
-        likelihoods.push(probabilityOfChordInLabel + smoothing);
-      }
-    });
-    const totalLikelihood = likelihoods.reduce(function (total, index) {
-      return total * index;
-    });
-    classified.set(difficulty, totalLikelihood);
-  });
-  return classified;
-}
-
 // TESTS
 
 describe("Characterization tests. The file:", function () {
@@ -174,7 +168,7 @@ describe("Characterization tests. The file:", function () {
   songList.addSong("bulletproof", ["d#m", "g#", "b", "f#", "g#m", "c#"], 2);
   trainAll();
   it("classifies", function () {
-    const classified = classify([
+    const classified = classifier.classify([
       "f#m7",
       "a",
       "dadd9",
@@ -190,7 +184,7 @@ describe("Characterization tests. The file:", function () {
   });
 
   it("classifies again", function () {
-    const classified = classify(["d", "g", "e", "dm"]);
+    const classified = classifier.classify(["d", "g", "e", "dm"]);
     expect(classified.get("easy")).toBe(2.023094827160494);
     expect(classified.get("medium")).toBe(1.855758613168724);
     expect(classified.get("hard")).toBe(1.855758613168724);
