@@ -70,7 +70,6 @@ const classifier = {
     }, this);
     this.setLabelProbabilities();
   },
-
   train: function (chords, label) {
     chords.forEach((chord) => {
       classifier.songList.allChords.add(chord);
@@ -81,7 +80,6 @@ const classifier = {
       this.labelCounts.set(label, 1);
     }
   },
-
   setLabelProbabilities: function () {
     this.labelCounts.forEach(function (_count, label) {
       this.labelProbabilities.set(
@@ -91,70 +89,6 @@ const classifier = {
     }, this);
   },
 };
-
-function setup() {
-  songs = [];
-  allChords = new Set();
-  labelCounts = new Map();
-  labelProbabilities = new Map();
-  chordCountsInLabels = new Map();
-  probabilityOfChordsInLabels = new Map();
-}
-
-function train(chords, label) {
-  chords.forEach((chord) => classifier.allChords.add(chord));
-  if (Array.from(classifier.labelCounts.keys()).includes(label)) {
-    classifier.labelCounts.set(label, classifier.labelCounts.get(label) + 1);
-  } else {
-    classifier.labelCounts.set(label, 1);
-  }
-}
-
-function setLabelProbabilities() {
-  classifier.labelCounts.forEach(function (_count, label) {
-    classifier.labelProbabilities.set(
-      label,
-      classifier.labelCounts.get(label) / classifier.songList.songs.length
-    );
-  });
-}
-
-function setChordCountsInLabels() {
-  classifier.songList.songs.forEach(function (song) {
-    if (classifier.chordCountsInLabels.get(song.difficulty) === undefined) {
-      classifier.chordCountsInLabels.set(song.difficulty, {});
-    }
-    song.chords.forEach(function (chord) {
-      if (classifier.chordCountsInLabels.get(song.difficulty)[chord] > 0) {
-        classifier.chordCountsInLabels.get(song.difficulty)[chord] += 1;
-      } else {
-        classifier.chordCountsInLabels.get(song.difficulty)[chord] = 1;
-      }
-    });
-  });
-}
-
-function setProbabilityOfChordsInLabels() {
-  classifier.chordCountsInLabels.forEach(function (_chords, difficulty) {
-    Object.keys(classifier.chordCountsInLabels.get(difficulty)).forEach(
-      function (chord) {
-        classifier.chordCountsInLabels.get(difficulty)[chord] /=
-          classifier.songs.length;
-      }
-    );
-  });
-}
-
-function trainAll() {
-  classifier.songList.songs.forEach(function (song) {
-    train(song.chords, song.difficulty);
-  });
-  setLabelProbabilities();
-}
-
-function setLabelsAndProbabilities() {
-  setLabelProbabilities();
-}
 
 // TESTS
 
