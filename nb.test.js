@@ -17,6 +17,26 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   probabilityOfChordsInLabels: new Map(),
+  smoothing: 1.01,
+  valueForChordDifficulty(difficulty, chord) {
+    const value = this.probabilityOfChordsInLabels.get(difficulty)[chord];
+    return value ? value + this.smoothing : 1;
+  },
+  classify: function (chords) {
+    return new Map(
+      Array.from(this.labelProbabilities.entries()).map(
+        (labelWithProbability) => {
+          const difficulty = labelWithProbability[0];
+          return [
+            difficulty,
+            chords.reduce((total, chord) => {
+              return total * this.valueForChordDifficulty(difficulty, chord);
+            }, this.labelProbabilities.get(difficulty) + this.smoothing),
+          ];
+        }
+      )
+    );
+  },
 };
 
 function setup() {
@@ -90,23 +110,6 @@ function setLabelsAndProbabilities() {
   setProbabilityOfChordsInLabels();
 }
 
-function classify(chords) {
-  const smoothing = 1.01;
-  const classified = new Map();
-  classifier.labelProbabilities.forEach(function (_probabilities, difficulty) {
-    let first = classifier.labelProbabilities.get(difficulty) + smoothing;
-    chords.forEach(function (chord) {
-      const probabilityOfChordInLabel =
-        classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
-      if (probabilityOfChordInLabel) {
-        first = first * (probabilityOfChordInLabel + smoothing);
-      }
-    });
-    classified.set(difficulty, first);
-  });
-  return classified;
-}
-
 // TESTS
 
 describe("Characterization tests. The file:", function () {
@@ -152,7 +155,7 @@ describe("Characterization tests. The file:", function () {
 
   trainAll();
   it("classifies", function () {
-    const classified = classify([
+    const classified = classifier.classify([
       "f#m7",
       "a",
       "dadd9",
@@ -168,7 +171,7 @@ describe("Characterization tests. The file:", function () {
   });
 
   it("classifies again", function () {
-    const classified = classify(["d", "g", "e", "dm"]);
+    const classified = classifier.classify(["d", "g", "e", "dm"]);
     expect(classified.get("easy")).toBe(2.023094827160494);
     expect(classified.get("medium")).toBe(1.855758613168724);
     expect(classified.get("hard")).toBe(1.855758613168724);
