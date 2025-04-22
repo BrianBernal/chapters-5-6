@@ -1,62 +1,65 @@
-const Classifier = function () {
-  const SongList = function () {
-    this.allChords = new Set();
-    this.difficulties = ["easy", "medium", "hard"];
-    this.songs = [];
-    this.addSong = function (name, chords, difficulty) {
-      this.songs.push({
-        name,
-        chords,
-        difficulty: this.difficulties[difficulty],
-      });
+class Classifier {
+  constructor() {
+    this.songList = {
+      allChords: new Set(),
+      difficulties: ["easy", "medium", "hard"],
+      songs: [],
+      addSong(name, chords, difficulty) {
+        this.songs.push({
+          name,
+          chords,
+          difficulty: this.difficulties[difficulty],
+        });
+      },
     };
-  };
-  this.songList = new SongList();
-  this.labelCounts = new Map();
-  this.labelProbabilities = new Map();
-  this.chordCountsInLabels = new Map();
-  this.smoothing = 1.01;
-  this.chordCountForDifficulty = function (difficulty, testChord) {
+    this.labelCounts = new Map();
+    this.labelProbabilities = new Map();
+    this.smoothing = 1.01;
+  }
+  addSong(name, chords, difficulty) {
+    this.songList.addSong(name, chords, difficulty);
+  }
+  chordCountForDifficulty(difficulty, testChord) {
     return this.songList.songs.reduce((counter, song) => {
       if (song.difficulty === difficulty) {
         counter += song.chords.filter((chord) => chord === testChord).length;
       }
       return counter;
     }, 0);
-  };
-  this.likelihoodFromChord = function (difficulty, chord) {
+  }
+  likelihoodFromChord(difficulty, chord) {
     return (
       this.chordCountForDifficulty(difficulty, chord) /
       this.songList.songs.length
     );
-  };
-  this.valueForChordDifficulty = function (difficulty, chord) {
+  }
+  valueForChordDifficulty(difficulty, chord) {
     const value = this.likelihoodFromChord(difficulty, chord);
     return value ? value + this.smoothing : 1;
-  };
-  this.trainAll = function () {
+  }
+  trainAll() {
     this.songList.songs.forEach((song) => {
       this.train(song.chords, song.difficulty);
     });
     this.setLabelProbabilities();
-  };
-  this.train = function (chords, label) {
+  }
+  train(chords, label) {
     chords.forEach((chord) => this.songList.allChords.add(chord));
     if (Array.from(this.labelCounts.keys()).includes(label)) {
       this.labelCounts.set(label, this.labelCounts.get(label) + 1);
     } else {
       this.labelCounts.set(label, 1);
     }
-  };
-  this.setLabelProbabilities = function () {
+  }
+  setLabelProbabilities() {
     this.labelCounts.forEach((_count, label) => {
       this.labelProbabilities.set(
         label,
         this.labelCounts.get(label) / this.songList.songs.length
       );
     });
-  };
-  this.classify = function (chords) {
+  }
+  classify(chords) {
     return new Map(
       Array.from(this.labelProbabilities.entries()).map(
         (labelWithProbability) => {
@@ -70,40 +73,28 @@ const Classifier = function () {
         }
       )
     );
-  };
-};
+  }
+}
 
 // TESTS
 
 describe("Characterization tests. The file:", () => {
   const classifier = new Classifier();
-  classifier.songList.addSong(
-    "imagine",
-    ["c", "cmaj7", "f", "am", "dm", "g", "e7"],
-    0
-  );
-  classifier.songList.addSong(
-    "somewhereOverTheRainbow",
-    ["c", "em", "f", "g", "am"],
-    0
-  );
-  classifier.songList.addSong("tooManyCooks", ["c", "g", "f"], 0);
-  classifier.songList.addSong(
+  classifier.addSong("imagine", ["c", "cmaj7", "f", "am", "dm", "g", "e7"], 0);
+  classifier.addSong("somewhereOverTheRainbow", ["c", "em", "f", "g", "am"], 0);
+  classifier.addSong("tooManyCooks", ["c", "g", "f"], 0);
+  classifier.addSong(
     "iWillFollowYouIntoTheDark",
     ["f", "dm", "bb", "c", "a", "bbm"],
     1
   );
-  classifier.songList.addSong(
-    "babyOneMoreTime",
-    ["cm", "g", "bb", "eb", "fm", "ab"],
-    1
-  );
-  classifier.songList.addSong(
+  classifier.addSong("babyOneMoreTime", ["cm", "g", "bb", "eb", "fm", "ab"], 1);
+  classifier.addSong(
     "creep",
     ["g", "gsus4", "b", "bsus4", "c", "cmsus4", "cm6"],
     1
   );
-  classifier.songList.addSong(
+  classifier.addSong(
     "paperBag",
     [
       "bm7",
@@ -122,16 +113,12 @@ describe("Characterization tests. The file:", () => {
     ],
     2
   );
-  classifier.songList.addSong(
+  classifier.addSong(
     "toxic",
     ["cm", "eb", "g", "cdim", "eb7", "d7", "db7", "ab", "gmaj7", "g7"],
     2
   );
-  classifier.songList.addSong(
-    "bulletproof",
-    ["d#m", "g#", "b", "f#", "g#m", "c#"],
-    2
-  );
+  classifier.addSong("bulletproof", ["d#m", "g#", "b", "f#", "g#m", "c#"], 2);
 
   classifier.trainAll();
   it("classifies", () => {
