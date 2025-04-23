@@ -1,82 +1,4 @@
-class Classifier {
-  constructor() {
-    this.songList = {
-      allChords: new Set(),
-      difficulties: ["easy", "medium", "hard"],
-      songs: [],
-      addSong(name, chords, difficulty) {
-        this.songs.push({
-          name,
-          chords,
-          difficulty: this.difficulties[difficulty],
-        });
-      },
-    };
-    this.labelCounts = new Map();
-    this.labelProbabilities = new Map();
-    this.smoothing = 1.01;
-  }
-  addSong(name, chords, difficulty) {
-    this.songList.addSong(name, chords, difficulty);
-  }
-  chordCountForDifficulty(difficulty, testChord) {
-    return this.songList.songs.reduce((counter, song) => {
-      if (song.difficulty === difficulty) {
-        counter += song.chords.filter((chord) => chord === testChord).length;
-      }
-      return counter;
-    }, 0);
-  }
-  likelihoodFromChord(difficulty, chord) {
-    return (
-      this.chordCountForDifficulty(difficulty, chord) /
-      this.songList.songs.length
-    );
-  }
-  valueForChordDifficulty(difficulty, chord) {
-    const value = this.likelihoodFromChord(difficulty, chord);
-    return value ? value + this.smoothing : 1;
-  }
-  trainAll() {
-    this.songList.songs.forEach((song) => {
-      this.train(song.chords, song.difficulty);
-    });
-    this.setLabelProbabilities();
-  }
-  train(chords, label) {
-    chords.forEach((chord) => this.songList.allChords.add(chord));
-    if (Array.from(this.labelCounts.keys()).includes(label)) {
-      this.labelCounts.set(label, this.labelCounts.get(label) + 1);
-    } else {
-      this.labelCounts.set(label, 1);
-    }
-  }
-  setLabelProbabilities() {
-    this.labelCounts.forEach((_count, label) => {
-      this.labelProbabilities.set(
-        label,
-        this.labelCounts.get(label) / this.songList.songs.length
-      );
-    });
-  }
-  classify(chords) {
-    return new Map(
-      Array.from(this.labelProbabilities.entries()).map(
-        (labelWithProbability) => {
-          const difficulty = labelWithProbability[0];
-          return [
-            difficulty,
-            chords.reduce((total, chord) => {
-              return total * this.valueForChordDifficulty(difficulty, chord);
-            }, this.labelProbabilities.get(difficulty) + this.smoothing),
-          ];
-        }
-      )
-    );
-  }
-}
-
-// TESTS
+const Classifier = require("./nb.js");
 
 describe("Characterization tests. The file:", () => {
   const classifier = new Classifier();
@@ -145,10 +67,10 @@ describe("Characterization tests. The file:", () => {
   });
 
   it("label probabilities", () => {
-    expect(classifier.labelProbabilities.get("easy")).toBe(0.3333333333333333);
-    expect(classifier.labelProbabilities.get("medium")).toBe(
+    expect(classifier._labelProbabilities.get("easy")).toBe(0.3333333333333333);
+    expect(classifier._labelProbabilities.get("medium")).toBe(
       0.3333333333333333
     );
-    expect(classifier.labelProbabilities.get("hard")).toBe(0.3333333333333333);
+    expect(classifier._labelProbabilities.get("hard")).toBe(0.3333333333333333);
   });
 });
