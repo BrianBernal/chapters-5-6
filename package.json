@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --watch index.js",
+    "start": "jest --watch nb.test.js",
     "setup-test-env": "yarn global add jest",
     "test": "jest",
     "test:unit:watch": "jest --watchAll"
